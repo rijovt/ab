@@ -71,22 +71,28 @@
 
                 <div class="collapse {{ $section == 'inventory' ? 'show' : '' }}" id="inventory">
                     <ul class="nav pl-4">
-                        <li @if ($pageSlug == 'istats') class="active " @endif>
+                        <!-- <li @if ($pageSlug == 'istats') class="active " @endif>
                             <a href="{{ route('inventory.stats') }}">
                                 <i class="tim-icons icon-chart-pie-36"></i>
                                 <p>Statistics</p>
                             </a>
-                        </li>
+                        </li> -->
                         <li @if ($pageSlug == 'products') class="active " @endif>
                             <a href="{{ route('products.index') }}">
-                                <i class="tim-icons icon-notes"></i>
-                                <p>Products</p>
+                                <i class="tim-icons icon-components"></i>
+                                <p>Stock</p>
                             </a>
                         </li>
                         <li @if ($pageSlug == 'categories') class="active " @endif>
                             <a href="{{ route('categories.index') }}">
                                 <i class="tim-icons icon-tag"></i>
                                 <p>Categoríes</p>
+                            </a>
+                        </li>
+                        <li @if ($pageSlug == 'items') class="active " @endif>
+                            <a href="{{ route('items.index') }}">
+                                <i class="tim-icons icon-notes"></i>
+                                <p>Items</p>
                             </a>
                         </li>
                         <li @if ($pageSlug == 'receipts') class="active " @endif>

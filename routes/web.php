@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
         'providers' => 'ProviderController',
         'inventory/products' => 'ProductController',
         'clients' => 'ClientController',
+        'inventory/items' => 'ItemController',
         'inventory/categories' => 'ProductCategoryController',
         'transactions/transfer' => 'TransferController',
         'methods' => 'MethodController',
@@ -41,9 +42,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('inventory/receipts/{receipt}/finalize', ['as' => 'receipts.finalize', 'uses' => 'ReceiptController@finalize']);
     Route::get('inventory/receipts/{receipt}/product/add', ['as' => 'receipts.product.add', 'uses' => 'ReceiptController@addproduct']);
     Route::get('inventory/receipts/{receipt}/product/{receivedproduct}/edit', ['as' => 'receipts.product.edit', 'uses' => 'ReceiptController@editproduct']);
-    Route::post('inventory/receipts/{receipt}/product', ['as' => 'receipts.product.store', 'uses' => 'ReceiptController@storeproduct']);
+    Route::post('inventory/receipts/product', ['as' => 'receipts.product.store', 'uses' => 'ReceiptController@storeproduct']);
     Route::match(['put', 'patch'], 'inventory/receipts/{receipt}/product/{receivedproduct}', ['as' => 'receipts.product.update', 'uses' => 'ReceiptController@updateproduct']);
-    Route::delete('inventory/receipts/{receipt}/product/{receivedproduct}', ['as' => 'receipts.product.destroy', 'uses' => 'ReceiptController@destroyproduct']);
+    Route::delete('inventory/receipts/product/{receivedproduct}', ['as' => 'receipts.product.destroy', 'uses' => 'ReceiptController@destroyproduct']);
 
     Route::resource('sales', 'SaleController')->except(['edit', 'update']);
     Route::get('sales/{sale}/finalize', ['as' => 'sales.finalize', 'uses' => 'SaleController@finalize']);
@@ -52,8 +53,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('sales/{sale}/product', ['as' => 'sales.product.store', 'uses' => 'SaleController@storeproduct']);
     Route::match(['put', 'patch'], 'sales/{sale}/product/{soldproduct}', ['as' => 'sales.product.update', 'uses' => 'SaleController@updateproduct']);
     Route::delete('sales/{sale}/product/{soldproduct}', ['as' => 'sales.product.destroy', 'uses' => 'SaleController@destroyproduct']);
+    Route::get('sales/{sale}/print', ['as' => 'sales.print', 'uses' => 'SaleController@print']);
 
     Route::get('clients/{client}/transactions/add', ['as' => 'clients.transactions.add', 'uses' => 'ClientController@addtransaction']);
+
+    Route::get('products/{id}', ['uses' => 'ProductController@getdetails']);
+    Route::get('sales/{sale}/transactions/add', ['uses' => 'SaleController@addtransaction']);
+    Route::post('sales/{sale}/transactions/store', ['as' => 'sales.transaction.store','uses' => 'SaleController@storetransaction']);
 
     Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
     Route::match(['put', 'patch'], 'profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);

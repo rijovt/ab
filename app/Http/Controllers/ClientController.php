@@ -29,7 +29,7 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
+    {        
         return view('clients.create');
     }
 
@@ -41,6 +41,7 @@ class ClientController extends Controller
      */
     public function store(ClientRequest $request, Client $client)
     {
+        $request->merge( ['name' => ucwords($request->name)] );
         $client->create($request->all());
         
         return redirect()->route('clients.index')->withStatus('Successfully registered customer.');
@@ -77,6 +78,7 @@ class ClientController extends Controller
      */
     public function update(ClientRequest $request, Client $client)
     {
+        $request->merge( ['name' => ucwords($request->name)] );
         $client->update($request->all());
 
         return redirect()

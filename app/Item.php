@@ -5,15 +5,17 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductCategory extends Model
+class Item extends Model
 {
     use SoftDeletes;
-    protected $table = 'product_categories';
-    protected $fillable = ['name'];
+    protected $guarded = [];
+
+    public function category()
+    {
+        return $this->belongsTo('App\ProductCategory', 'product_category_id')->withTrashed();
+    }
+
     public function products() {
         return $this->hasMany('App\Product');
-    }
-    public function items() {
-        return $this->hasMany('App\Item');
     }
 }

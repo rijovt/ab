@@ -10,7 +10,7 @@ class Sale extends Model
         'client_id', 'user_id'
     ];
     public function client() {
-        return $this->belongsTo('App\Client');
+        return $this->belongsTo('App\Client')->withTrashed();
     }
     public function transactions() {
         return $this->hasMany('App\Transaction');

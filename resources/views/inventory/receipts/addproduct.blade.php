@@ -15,42 +15,73 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="{{ route('receipts.product.store', $receipt) }}" autocomplete="off">
+                        <form method="post" id="formData" autocomplete="off">
                             @csrf
-
+                            
+                            <input type="hidden" name="receipt_id" id="receipt_id" value="{{ $receipt->id }}">
                             <div class="pl-lg-4">
-                                <input type="hidden" name="receipt_id" value="{{ $receipt->id }}">
-                                <div class="form-group{{ $errors->has('product_id') ? ' has-danger' : '' }}">
-                                    <label class="form-control-label" for="input-product">Product</label>
-                                    <select name="product_id" id="input-product" class="form-select form-control-alternative{{ $errors->has('product_id') ? ' is-invalid' : '' }}" required>
-                                        @foreach ($products as $product)
-                                            @if($product['id'] == old('product_id'))
-                                                <option value="{{$product['id']}}" selected>[{{ $product->category->name }}] {{ $product->name }}</option>
-                                            @else
-                                                <option value="{{$product['id']}}">[{{ $product->category->name }}] {{ $product->name }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                    @include('alerts.feedback', ['field' => 'product_id'])
-                                </div>
-
-                                <div class="form-group{{ $errors->has('stock') ? ' has-danger' : '' }}">
-                                    <label class="form-control-label" for="input-stock">Stock</label>
-                                    <input type="number" name="stock" id="input-stock" class="form-control form-control-alternative{{ $errors->has('stock') ? ' is-invalid' : '' }}" value="0" required>
-                                    @include('alerts.feedback', ['field' => 'stock'])
-                                </div>
-
-                                <div class="form-group{{ $errors->has('stock_defective') ? ' has-danger' : '' }}">
-                                    <label class="form-control-label" for="input-stock_defective">Defective Stock</label>
-                                    <input type="number" name="stock_defective" id="input-stock_defective" class="form-control form-control-alternative{{ $errors->has('stock_defective') ? ' is-invalid' : '' }}" value="0" required>
-                                    @include('alerts.feedback', ['field' => 'stock_defective'])
-                                </div>
-
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-success mt-4">Continue</button>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <label class="form-control-label" for="input-item">Item</label>
+                                        <select name="item_id" id="input-item" class="form-select form-control-alternative" required>
+                                            @foreach ($items as $item)
+                                                <option value="{{$item['id']}}">{{ $item->name }} [{{ $item->category->name }}]</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="form-control-label" for="input-stock">Qty</label>
+                                        <input type="number" name="stock" id="input-stock" class="form-control form-control-alternative" value="0" required>
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="form-control-label" for="input-price">Price</label>
+                                        <input type="number" name="price" id="input-price" class="form-control form-control-alternative" value="0" required>
+                                    </div>
+                                    <div class="col-2">
+                                        <label class="form-control-label" for="input-selling">Selling Price</label>
+                                        <input type="number" name="selling_price" id="input-selling" class="form-control form-control-alternative" value="0" required>
+                                    </div>
+                                    <div class="col-2">
+                                        <input type="button" id="btn-add" value="Add" class="btn btn-sm btn-success mt-4" >
+                                    </div>
                                 </div>
                             </div>
                         </form>
+
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <th>Category</th>
+                            <th>Item</th>
+                            <th>Barcode</th>
+                            <th>Selling Price</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th></th>
+                        </thead>
+                        <tbody id="links-list">
+                            @foreach ($receipt->products->reverse() as $received_product)
+                                <tr id="row_{{ $received_product->id }}">
+                                    <td>{{ $received_product->item->category->name }}</td>
+                                    <td>{{ $received_product->item->name }}</td>
+                                    <td><a class="btn btn-sm btn-success">{{ $received_product->barcode }}</a></td>
+                                    <td>{{ $received_product->selling_price }}</td>
+                                    <td>{{ $received_product->stock }}</td>
+                                    <td>{{ $received_product->price }}</td>
+                                    <td>{{ round($received_product->price * $received_product->stock,1) }}</td>
+                                    <td class="text-center">
+                                        <!-- @if(!$receipt->finalized_at)
+                                            <a href="{{ route('receipts.product.edit', ['receipt' => $receipt, 'receivedproduct' => $received_product]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Pedido">
+                                                <i class="tim-icons icon-pencil"></i>
+                                            </a> -->
+                                            <a href="javascript:void(0)" onclick="deleteProd({{ $received_product->id }})" ><i class="tim-icons icon-simple-remove"></i></a>
+                                            
+                                        <!-- @endif -->
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                     </div>
                 </div>
             </div>
@@ -62,5 +93,62 @@
         new SlimSelect({
             select: '.form-select'
         });
+
+$(document).ready(function($){
+     // Clicking the save button
+    $("#btn-add").click(function (e) { 
+        e.preventDefault(); 
+        var a = $("#input-stock").val()
+        var b = $("#input-price").val()
+        var c = $("#input-selling").val()
+        if (a==0 || a=="" || b==0 || b=="" || c==0 || c=="")
+        {
+            alert("Please fill all fields");
+            return false;
+        }
+        else{       
+            $.ajax({
+                type: "POST",
+                url: "{{ route('receipts.product.store') }}",
+                data: $("#formData").serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    if(response.code == 200) {
+                        var link = '<tr id="row_' + response.data.id + '"><td>' + response.data.item.category.name + '</td><td>' + response.data.item.name + '</td><td><a class="btn btn-sm btn-success">' + response.data.barcode + '</a></td><td>' + response.data.selling_price + '</td><td>' + response.data.stock + '</td><td>' + response.data.price + '</td><td>' + response.data.total  + '</td>';
+                        link += '<td class="text-center"><a href="javascript:void(0)" onclick="deleteProd(' + response.data.id + ')" ><i class="tim-icons icon-simple-remove"></i></a></td></tr>';
+                        
+                        $('#links-list').prepend(link);                
+                        $('#formData').trigger("reset");
+                    }
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        }
+    });    
+});
+
+// Clicking delete
+function deleteProd(id){
+    if(confirm('Are you sure ?')){
+        let _url = `/inventory/receipts/product/${id}` 
+        let _token   = $('meta[name="csrf-token"]').attr('content');
+
+        $.ajax({
+            url: _url,
+            type: 'DELETE',
+            data: {
+              _token: _token
+            },
+            success: function(response) {
+                $("#row_"+id).remove();
+            },
+            error: function (data) {
+                console.log('Error:', data);
+            }
+        });
+    }
+}
     </script>
 @endpush

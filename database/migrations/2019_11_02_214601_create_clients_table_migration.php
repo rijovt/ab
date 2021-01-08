@@ -14,12 +14,13 @@ class CreateClientsTableMigration extends Migration
     public function up()
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->char('document_type', 1)->default('V');
-            $table->integer('document_id')->unique();
+            $table->bigIncrements('id');            
             $table->string('name');
             $table->string('email')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone',12)->nullable();
+            $table->text('address')->nullable();
+            $table->string('state',30)->nullable();
+            $table->string('gstin',15)->nullable();
             $table->timestamp('last_purchase')->nullable();
             $table->unsignedInteger('total_purchases')->default(0);
             $table->unsignedDecimal('total_paid')->default(0.00);

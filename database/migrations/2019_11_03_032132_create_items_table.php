@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductsTableMigration extends Migration
+class CreateItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,16 @@ class CreateProductsTableMigration extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->unique();
-            $table->unsignedBigInteger('item_id');
+            $table->string('name');
+            $table->string('prefix', 5)->unique();
+            $table->string('hsn')->nullable();
             $table->unsignedBigInteger('product_category_id');
-            $table->unsignedDecimal('price', 10, 2);
-            $table->unsignedDecimal('stock', 10, 2);
-            $table->unsignedinteger('stock_defective')->default(0);
+            $table->unsignedDecimal('tax', 3, 1);
+            $table->unsignedDecimal('cess', 3, 1)->nullable();            
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('item_id')->references('id')->on('items');
             $table->foreign('product_category_id')->references('id')->on('product_categories');
         });
     }
@@ -35,6 +34,6 @@ class CreateProductsTableMigration extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('items');
     }
 }

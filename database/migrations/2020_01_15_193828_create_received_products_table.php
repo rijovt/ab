@@ -16,11 +16,15 @@ class CreateReceivedProductsTable extends Migration
         Schema::create('received_products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('receipt_id');
-            $table->unsignedBigInteger('product_id');
-            $table->integer('stock');
-            $table->integer('stock_defective');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('item_id');
+            $table->string('barcode');
+            $table->unsignedDecimal('stock', 10, 2);
+            $table->integer('stock_defective')->nullable();
+            $table->unsignedDecimal('price', 10, 2);
+            $table->unsignedDecimal('selling_price', 10, 2);
             $table->foreign('receipt_id')->references('id')->on('receipts')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('item_id')->references('id')->on('items');
             $table->timestamps();
         });
     }

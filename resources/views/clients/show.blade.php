@@ -6,14 +6,23 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Client Information</h4>
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">{{ __('Client Management') }}</h3>
+                        </div>
+                        <div class="col-4 text-right">
+                            <a href="{{ route('clients.index') }}" class="btn btn-sm btn-primary">{{ __('Back to List') }}</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <table class="table">
                         <thead>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Document</th>
+                            <th>Address</th>
+                            <th>State</th>
+                            <th>GSTIN</th>
                             <th>Telephone</th>
                             <th>Email</th>
                             <th>Balance</th>
@@ -25,7 +34,9 @@
                             <tr>
                                 <td>{{ $client->id }}</td>
                                 <td>{{ $client->name }}</td>
-                                <td>{{ $client->document_type }}-{{ $client->document_id }}</td>
+                                <td>{{ $client->address }}</td>
+                                <td>{{ $client->state }}</td>
+                                <td>{{ $client->gstin }}</td>
                                 <td>{{ $client->phone }}</td>
                                 <td>{{ $client->email }}</td>
                                 <td>

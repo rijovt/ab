@@ -28,9 +28,9 @@
                                     <select name="client_id" id="input-category" class="form-select form-control-alternative{{ $errors->has('client') ? ' is-invalid' : '' }}" required>
                                         @foreach ($clients as $client)
                                             @if($client['id'] == old('client'))
-                                                <option value="{{$client['id']}}" selected>{{$client['name']}} - {{$client['document_type'].$client['document_id']}}</option>
+                                                <option value="{{$client['id']}}" selected>{{$client['name']}} - Ph: {{$client['phone']}}</option>
                                             @else
-                                                <option value="{{$client['id']}}">{{$client['name']}} - {{$client['document_type'].$client['document_id']}}</option>
+                                                <option value="{{$client['id']}}">{{$client['name']}} - Ph: {{$client['phone']}}</option>
                                             @endif
                                         @endforeach
                                     </select>

@@ -11,21 +11,26 @@
                         <div class="col-8">
                             <h4 class="card-title">Sale Summary</h4>
                         </div>
+                        <div class="col-4 text-right">
+                            <a href="{{ route('sales.index') }}" class="btn btn-sm btn-primary">Back to Sales</a>
+                        </div>
                         @if (!$sale->finalized_at)
                             <div class="col-4 text-right">
                                 @if ($sale->products->count() == 0)
                                     <form action="{{ route('sales.destroy', $sale) }}" method="post" class="d-inline">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="btn btn-sm btn-primary">
+                                        <button type="submit" class="btn btn-sm btn-danger">
                                             Delete Sale
                                         </button>
                                     </form>
                                 @else
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="confirm('ATTENTION: The transactions of this sale do not seem to coincide with the cost of the products, do you want to finalize it? Your records cannot be modified from now on.') ? window.location.replace('{{ route('sales.finalize', $sale) }}') : ''">
+                                    <button type="button" class="btn btn-sm btn-success" onclick="confirm('ATTENTION: The transactions of this sale do not seem to coincide with the cost of the products, do you want to finalize it? Your records cannot be modified from now on.') ? window.location.replace('{{ route('sales.finalize', $sale) }}') : ''">
                                         Finalize Sale
                                     </button>
                                 @endif
+
+                                <a href="{{ route('sales.index') }}" class="btn btn-sm btn-primary">Back</a>
                             </div>
                         @endif
                     </div>
@@ -47,7 +52,7 @@
                                 <td>{{ $sale->id }}</td>
                                 <td>{{ date('d-m-y', strtotime($sale->created_at)) }}</td>
                                 <td>{{ $sale->user->name }}</td>
-                                <td><a href="{{ route('clients.show', $sale->client) }}">{{ $sale->client->name }}<br>{{ $sale->client->document_type }}-{{ $sale->client->document_id }}</a></td>
+                                <td><a href="{{ route('clients.show', $sale->client) }}">{{ $sale->client->name }}</a></td>
                                 <td>{{ $sale->products->count() }}</td>
                                 <td>{{ $sale->products->sum('qty') }}</td>
                                 <td>{{ format_money($sale->products->sum('total_amount')) }}</td>
@@ -97,13 +102,13 @@
                                     <td>{{ format_money($sold_product->total_amount) }}</td>
                                     <td class="td-actions text-right">
                                         @if(!$sale->finalized_at)
-                                            <a href="{{ route('sales.product.edit', ['sale' => $sale, 'soldproduct' => $sold_product]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Pedido">
+                                            <a href="{{ route('sales.product.edit', ['sale' => $sale, 'soldproduct' => $sold_product]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit ">
                                                 <i class="tim-icons icon-pencil"></i>
                                             </a>
                                             <form action="{{ route('sales.product.destroy', ['sale' => $sale, 'soldproduct' => $sold_product]) }}" method="post" class="d-inline">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Delete Pedido" onclick="confirm('Estás seguro que quieres eliminar este pedido de producto/s? Su registro será eliminado de esta venta.') ? this.parentElement.submit() : ''">
+                                                <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Delete " onclick="confirm('Are you sure you want to delete this product / s order? Your registration will be removed from this sale..') ? this.parentElement.submit() : ''">
                                                     <i class="tim-icons icon-simple-remove"></i>
                                                 </button>
                                             </form>

@@ -18,13 +18,14 @@
                 <div class="card-body">
                     <div class="">
                         <table class="table">
-                            <thead>
+                            <thead class="thead-light">
                                 <th>Date</th>
                                 <th>Client</th>
                                 <th>User</th>
                                 <th>Products</th>
                                 <th>Total Stock</th>
                                 <th>Total Amount</th>
+                                <th>Invoice</th>
                                 <th>Status</th>
                                 <th></th>
                             </thead>
@@ -32,11 +33,12 @@
                                 @foreach ($sales as $sale)
                                     <tr>
                                         <td>{{ date('d-m-y', strtotime($sale->created_at)) }}</td>
-                                        <td><a href="{{ route('clients.show', $sale->client) }}">{{ $sale->client->name }}<br>{{ $sale->client->document_type }}-{{ $sale->client->document_id }}</a></td>
+                                        <td><a href="{{ route('clients.show', $sale->client) }}">{{ $sale->client->name }}</a></td>
                                         <td>{{ $sale->user->name }}</td>
                                         <td>{{ $sale->products->count() }}</td>
                                         <td>{{ $sale->products->sum('qty') }}</td>
-                                        <td>{{ format_money($sale->transactions->sum('amount')) }}</td>
+                                        <td>{{ format_money($sale->total_amount) }}</td>
+                                        <td>{{ $sale->inv_no }}</td>
                                         <td>
                                             @if (!$sale->finalized_at)
                                                 <span class="text-danger">To Finalize</span>
@@ -46,14 +48,18 @@
                                         </td>
                                         <td class="td-actions text-right">
                                             @if (!$sale->finalized_at)
-                                                <a href="{{ route('sales.show', ['sale' => $sale]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Sale">
+                                                <a href="{{ route('sales.product.add', ['sale' => $sale]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Add Items">
                                                     <i class="tim-icons icon-pencil"></i>
                                                 </a>
                                             @else
                                                 <a href="{{ route('sales.show', ['sale' => $sale]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="View Sale">
                                                     <i class="tim-icons icon-zoom-split"></i>
                                                 </a>
+                                                <a href="{{ route('sales.print', ['sale' => $sale]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Print Bill">
+                                                    <i class="tim-icons icon-paper"></i>
+                                                </a>
                                             @endif
+                                            @if (!$sale->products->count())
                                             <form action="{{ route('sales.destroy', $sale) }}" method="post" class="d-inline">
                                                 @csrf
                                                 @method('delete')
@@ -61,6 +67,7 @@
                                                     <i class="tim-icons icon-simple-remove"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

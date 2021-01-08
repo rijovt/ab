@@ -2,17 +2,19 @@
 
 namespace App\Http\Requests;
 
-use App\Client;
+use App\Item;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ClientRequest extends FormRequest
+class ItemRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
+    
+
     public function authorize()
     {
         return auth()->check();
@@ -26,12 +28,12 @@ class ClientRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:3',
-            'email' => 'sometimes|nullable|email',
-            'gstin' => 'sometimes|nullable|max:15',
-            /*'email' => [
-                'email', Rule::unique((new Client)->getTable())->ignore($this->route()->client->id ?? null)
-            ],*/            
+            'name' => ['required'],
+            'prefix' => ['required','unique:items','max:3'],
+            'hsn' => ['required'],
+            'product_category_id' => ['required'],
+            'tax' => ['required','between:0,99.99'],
+            'cess' => ['between:0,99.99'],
         ];
     }
 }

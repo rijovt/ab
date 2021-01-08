@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Receipt;
 use App\Provider;
 use App\Product;
+use App\Item;
 
 use Carbon\Carbon;
 use App\ReceivedProduct;
@@ -91,9 +92,16 @@ class ReceiptController extends Controller
         $receipt->save();
 
         foreach($receipt->products as $receivedproduct) {
-            $receivedproduct->product->stock += $receivedproduct->stock;
-            $receivedproduct->product->stock_defective += $receivedproduct->stock_defective;
-            $receivedproduct->product->save();
+            $product = Product::create([
+                    'name' => $receivedproduct->barcode,
+                    'item_id' => $receivedproduct->item_id,
+                    'product_category_id' => $receivedproduct->item->product_category_id,
+                    'price' => $receivedproduct->selling_price,
+                    'stock' => $receivedproduct->stock
+                ]);
+
+            $receivedproduct->product_id = $product->id;
+            $receivedproduct->save();
         }
 
         return back()->withStatus('Receipt successfully completed.');
@@ -107,9 +115,9 @@ class ReceiptController extends Controller
      */
     public function addproduct(Receipt $receipt)
     {
-        $products = Product::all();
+        $items = Item::all();
 
-        return view('inventory.receipts.addproduct', compact('receipt', 'products'));
+        return view('inventory.receipts.addproduct', compact('receipt', 'items'));
     }
 
     /**
@@ -119,13 +127,29 @@ class ReceiptController extends Controller
      * @param  Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
-    public function storeproduct(Request $request, Receipt $receipt, ReceivedProduct $receivedproduct)
+    public function storeproduct(Request $request)
     {
-        $receivedproduct->create($request->all());
+        $request->validate([
+            'receipt_id' => 'required',
+            'item_id' => 'required',
+            'stock' => 'required',
+            'price' => 'required',
+            'selling_price' => 'required',
+        ]);
 
-        return redirect()
-            ->route('receipts.show', $receipt)
-            ->withStatus('Product added successfully.');
+        $last = ReceivedProduct::where('item_id', $request->item_id)->orderBy('id', 'DESC')->first();
+        $item = Item::find($request->item_id);
+        if(!empty($last->barcode))
+            $no = (str_replace($item->prefix,'',$last->barcode))+1;
+        else
+            $no = 1000;
+        $request->request->add( ['barcode' => $item->prefix.$no] );
+
+        $receivedproduct = ReceivedProduct::create($request->all());
+        $receivedproduct['total']= round($receivedproduct->price * $receivedproduct->stock,1);
+        $receivedproduct->item->category->name;
+
+        return response()->json(['code'=>200, 'message'=>'Product Added successfully','data' => $receivedproduct], 200);
     }
 
     /**
@@ -163,12 +187,10 @@ class ReceiptController extends Controller
      * @param  Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
-    public function destroyproduct(Receipt $receipt, ReceivedProduct $receivedproduct)
+    public function destroyproduct(ReceivedProduct $receivedproduct)
     {
         $receivedproduct->delete();
 
-        return redirect()
-            ->route('receipts.show', $receipt)
-            ->withStatus('Product removed successfully.');
+        return response()->json(['success'=>'Product Deleted successfully']);        
     }
 }

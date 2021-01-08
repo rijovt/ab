@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Client;
 use App\Sale;
 use App\Product;
+use App\Item;
 use Carbon\Carbon;
 use App\SoldProduct;
 use App\Transaction;
@@ -55,7 +56,7 @@ class SaleController extends Controller
         $sale = $model->create($request->all());
         
         return redirect()
-            ->route('sales.show', ['sale' => $sale->id])
+            ->route('sales.product.add', ['sale' => $sale->id])
             ->withStatus('Sale registered successfully, you can start registering products and transactions.');
     }
 
@@ -89,41 +90,56 @@ class SaleController extends Controller
     {
         $sale->total_amount = $sale->products->sum('total_amount');
 
-        foreach ($sale->products as $sold_product) {
+        /*foreach ($sale->products as $sold_product) {
             $product_name = $sold_product->product->name;
             $product_stock = $sold_product->product->stock;
             if($sold_product->qty > $product_stock) return back()->withError("The product '$product_name' does not have enough stock. Only has $product_stock units.");
-        }
-
-        foreach ($sale->products as $sold_product) {
-            $sold_product->product->stock -= $sold_product->qty;
-            $sold_product->product->save();
-        }
-
+        }*/
+        $last = Sale::where('inv_no', '!=', null)->orderBy('id', 'DESC')->first();
+        $sale->inv_no = empty($last->inv_no) ? 1 : $last->inv_no+1;
         $sale->finalized_at = Carbon::now()->toDateTimeString();
         $sale->client->balance -= $sale->total_amount;
         $sale->save();
         $sale->client->save();
 
-        return back()->withStatus('The sale has been successfully completed.');
+        return redirect()->route('sales.index')->withStatus('The sale has been successfully completed.');
+    }
+
+    public function print(Sale $sale)
+    {
+        return view('sales.print', ['sale' => $sale]);
     }
 
     public function addproduct(Sale $sale)
     {
-        $products = Product::all();
+        $products = Product::where('stock', '>', 0)->get();
 
         return view('sales.addproduct', compact('sale', 'products'));
     }
 
-    public function storeproduct(Request $request, Sale $sale, SoldProduct $soldProduct)
-    {
-        $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
+    public function storeproduct(Request $request, Sale $sale)
+    {   
+        $bar = Product::find($request->product_id);
+        $item = Item::find($bar->item_id);
+        if(config('app.SaleMode') == 'Include'){
+            $request['tax_amt'] = round( ($request->total_amount/($item->tax+100))*$item->tax , 2);
+        }
+        else{
+            $request['tax_amt'] = round( (($request->total_amount*$item->tax)/100), 2);
+            $request['total_amount'] += $request['tax_amt'];
+        }
 
-        $soldProduct->create($request->all());
+        $soldProduct = SoldProduct::create($request->all());
 
-        return redirect()
-            ->route('sales.show', ['sale' => $sale])
-            ->withStatus('Product successfully registered.');
+        $bar->stock -= $request->qty;
+        $bar->save();
+                
+        $soldProduct['bar'] = $bar->name;
+        $soldProduct['item'] = $item->name;
+        $soldProduct['total_amount'] = format_money($soldProduct->total_amount);
+        $soldProduct['grand'] = format_money($sale->products->sum('total_amount'));        
+
+        return response()->json($soldProduct, 200);
     }
 
     public function editproduct(Sale $sale, SoldProduct $soldproduct)
@@ -145,8 +161,12 @@ class SaleController extends Controller
     public function destroyproduct(Sale $sale, SoldProduct $soldproduct)
     {
         $soldproduct->delete();
-
-        return back()->withStatus('The product has been disposed of successfully.');
+     
+        $soldproduct->product->stock += $soldproduct->qty;
+        $soldproduct->product->save();        
+        
+        $soldProduct['grand'] = format_money($sale->products->sum('total_amount'));
+        return response()->json($soldProduct, 200); 
     }
 
     public function addtransaction(Sale $sale)
@@ -156,7 +176,7 @@ class SaleController extends Controller
         return view('sales.addtransaction', compact('sale', 'payment_methods'));
     }
 
-    public function storetransaction(Request $request, Sale $sale, Transaction $transaction)
+    public function storetransaction(Request $request, Sale $sale)
     {
         switch($request->all()['type']) {
             case 'income':

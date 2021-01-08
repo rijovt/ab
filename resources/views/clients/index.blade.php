@@ -18,10 +18,11 @@
                     @include('alerts.success')
 
                     <div class="">
-                        <table class="table tablesorter " id="">
-                            <thead class=" text-primary">
+                        <table class="table">
+                            <thead class="thead-light">
                                 <th>Name</th>
-                                <th>Email / Telephone</th>
+                                <th>Telephone</th>
+                                <th>Email</th>
                                 <th>Balance</th>
                                 <th>Purchases</th>
                                 <th>Total Payment</th>
@@ -31,12 +32,9 @@
                             <tbody>
                                 @foreach ($clients as $client)
                                     <tr>
-                                        <td>{{ $client->name }}<br>{{ $client->document_type }}-{{ $client->document_id }}</td>
-                                        <td>
-                                            <a href="mailto:{{ $client->email }}">{{ $client->email }}</a>
-                                            <br>
-                                            {{ $client->phone }}
-                                        </td>
+                                        <td>{{ $client->name }}</td>
+                                        <td>{{ $client->phone }}</td>
+                                        <td>{{ $client->email }}</td>
                                         <td>
                                             @if (round($client->balance) > 0)
                                                 <span class="text-success">{{ format_money($client->balance) }}</span>
@@ -50,16 +48,16 @@
                                         <td>{{ format_money($client->transactions->sum('amount')) }}</td>
                                         <td>{{ ($client->sales->sortByDesc('created_at')->first()) ? date('d-m-y', strtotime($client->sales->sortByDesc('created_at')->first()->created_at)) : 'N/A' }}</td>
                                         <td class="td-actions text-right">
-                                            <a href="{{ route('clients.show', $client) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="More Details">
+                                            <a href="{{ route('clients.show', $client) }}" class="btn btn-sm btn-link" data-toggle="tooltip" data-placement="bottom" title="More Details">
                                                 <i class="tim-icons icon-zoom-split"></i>
                                             </a>
-                                            <a href="{{ route('clients.edit', $client) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Client">
+                                            <a href="{{ route('clients.edit', $client) }}" class="btn btn-sm btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Client">
                                                 <i class="tim-icons icon-pencil"></i>
                                             </a>
                                             <form action="{{ route('clients.destroy', $client) }}" method="post" class="d-inline">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Delete Client" onclick="confirm('Estás seguro que quieres eliminar a este Client? Los registros de sus compras y Transactions no serán eliminados.') ? this.parentElement.submit() : ''">
+                                                <button type="button" class="btn btn-sm btn-link" data-toggle="tooltip" data-placement="bottom" title="Delete Client" onclick="confirm('Are you sure you want to delete this Client? The records of your purchases and Transactions will not be deleted.') ? this.parentElement.submit() : ''">
                                                     <i class="tim-icons icon-simple-remove"></i>
                                                 </button>
                                             </form>

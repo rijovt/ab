@@ -12,23 +12,27 @@
                         <div class="col-8">
                             <h4 class="card-title">Receipt Summary</h4>
                         </div>
-                        @if (!$receipt->finalized_at)
-                            <div class="col-4 text-right">
+                        <div class="col-4 text-right">
+                            @if (!$receipt->finalized_at)
                                 @if ($receipt->products->count() === 0)
                                     <form action="{{ route('receipts.destroy', $receipt) }}" method="post" class="d-inline">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="btn btn-sm btn-primary">
+                                        <button type="submit" class="btn btn-sm btn-danger">
                                             Delete Receipt
                                         </button>
                                     </form>
                                 @else
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="confirm('ATTENTION: At the end of this receipt you will not be able to load more products in it.') ? window.location.replace('{{ route('receipts.finalize', $receipt) }}') : ''">
+                                    <button type="button" class="btn btn-sm btn-success" onclick="confirm('ATTENTION: At the end of this receipt you will not be able to load more products in it.') ? window.location.replace('{{ route('receipts.finalize', $receipt) }}') : ''">
                                         Finalize Receipt
                                     </button>
                                 @endif
-                            </div>
-                        @endif
+                            @endif
+                            
+                            <a href="{{ route('receipts.index') }}" class="btn btn-sm btn-primary">Back</a>
+                        </div>
+
+                        
                     </div>
                 </div>
                 <div class="card-body">
@@ -41,7 +45,7 @@
                             <th>Provider</th>
                             <th>products</th>
                             <th>Stock</th>
-                            <th>Defective Stock</th>
+                            <!-- <th>Defective Stock</th> -->
                             <th>Status</th>
                         </thead>
                         <tbody>
@@ -59,7 +63,7 @@
                                 </td>
                                 <td>{{ $receipt->products->count() }}</td>
                                 <td>{{ $receipt->products->sum('stock') }}</td>
-                                <td>{{ $receipt->products->sum('stock_defective') }}</td>
+                                <!-- <td>{{ $receipt->products->sum('stock_defective') }}</td> -->
                                 <td>{!! $receipt->finalized_at ? 'Finalized' : '<span style="color:red; font-weight:bold;">TO FINALIZE</span>' !!}</td>
                             </tr>
                         </tbody>
@@ -85,37 +89,26 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table table-sm table-striped">
                         <thead>
                             <th>Category</th>
-                            <th>Product</th>
+                            <th>Item</th>
+                            <th>Barcode</th>
+                            <th>Selling Price</th>
                             <th>Stock</th>
-                            <th>Defective Stock</th>
-                            <th>Total Stock</th>
-                            <th></th>
+                            <th>Price</th>
+                            <th>Total</th>
                         </thead>
                         <tbody>
                             @foreach ($receipt->products as $received_product)
                                 <tr>
-                                    <td><a href="{{ route('categories.show', $received_product->product->category) }}">{{ $received_product->product->category->name }}</a></td>
-                                    <td><a href="{{ route('products.show', $received_product->product) }}">{{ $received_product->product->name }}</a></td>
+                                    <td><a href="{{ route('categories.show', $received_product->item->category) }}">{{ $received_product->item->category->name }}</a></td>
+                                    <td>{{ $received_product->item->name }}</td>
+                                    <td><a class="btn btn-sm btn-success">{{ $received_product->barcode }}</a></td>
+                                    <td>{{ $received_product->selling_price }}</td>
                                     <td>{{ $received_product->stock }}</td>
-                                    <td>{{ $received_product->stock_defective }}</td>
-                                    <td>{{ $received_product->stock + $received_product->stock_defective }}</td>
-                                    <td class="td-actions text-right">
-                                        @if(!$receipt->finalized_at)
-                                            <a href="{{ route('receipts.product.edit', ['receipt' => $receipt, 'receivedproduct' => $received_product]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Pedido">
-                                                <i class="tim-icons icon-pencil"></i>
-                                            </a>
-                                            <form action="{{ route('receipts.product.destroy', ['receipt' => $receipt, 'receivedproduct' => $received_product]) }}" method="post" class="d-inline">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Delete Pedido" onclick="confirm('Estás seguro que quieres eliminar este producto?') ? this.parentElement.submit() : ''">
-                                                    <i class="tim-icons icon-simple-remove"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </td>
+                                    <td>{{ $received_product->price }}</td>
+                                    <td>{{ $received_product->price * $received_product->stock }}</td>                                    
                                 </tr>
                             @endforeach
                         </tbody>

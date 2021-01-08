@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use App\Item;
 use App\ProductCategory;
 use App\Http\Requests\ProductRequest;
 
@@ -75,6 +76,18 @@ class ProductController extends Controller
 
         return view('inventory.products.edit', compact('product', 'categories'));
     }
+
+    // for sale
+    public function getdetails($id)
+    {
+        $product = Product::find($id);
+        $item = Item::find($product->item_id);
+
+        $data['item'] = $item->name;
+        $data['price'] = $product->price;
+        $data['avl_qty'] = $product->stock;
+        return response()->json($data, 200);
+    }    
 
     /**
      * Update the specified resource in storage.

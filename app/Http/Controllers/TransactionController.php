@@ -118,11 +118,11 @@ class TransactionController extends Controller
         if ($request->get('client_id')) {
             switch ($request->get('type')) {
                 case 'income':
-                    $request->merge(['title' => 'Payment Received from Customer ID: ' . $request->get('client_id')]);
+                    $request->merge(['title' => 'Payment Received from Client ID: ' . $request->get('client_id')]);
                     break;
 
                 case 'expense':
-                    $request->merge(['title' => 'Customer ID Return Payment: ' . $request->get('client_id')]);
+                    $request->merge(['title' => 'Client ID Return Payment: ' . $request->get('client_id')]);
 
                     if ($request->get('amount') > 0) {
                         $request->merge(['amount' => (float) $request->get('amount') * (-1)]);

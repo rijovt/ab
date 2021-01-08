@@ -7,21 +7,21 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-8">
-                            <h4 class="card-title">Products</h4>
+                            <h4 class="card-title">Stock</h4>
                         </div>
-                        <div class="col-4 text-right">
+                        <!-- <div class="col-4 text-right">
                             <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">New product</a>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="card-body">
                     @include('alerts.success')
 
                     <div class="">
-                        <table class="table tablesorter " id="">
-                            <thead class=" text-primary">
+                        <table class="table table-sm">
+                            <thead class="thead-light">
                                 <th scope="col">Category</th>
-                                <th scope="col">Product</th>
+                                <th scope="col">Barcode</th>
                                 <th scope="col">Base Price</th>
                                 <th scope="col">Stock</th>
                                 <th scope="col">Faulty</th>
@@ -37,11 +37,11 @@
                                         <td>{{ $product->stock }}</td>
                                         <td>{{ $product->stock_defective }}</td>
                                         <td>{{ $product->solds->sum('qty') }}</td>
-                                        <td class="td-actions text-right">
-                                            <a href="{{ route('products.show', $product) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="More Details">
+                                        <td class="td-actions text-center">
+                                            <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-link" data-toggle="tooltip" data-placement="bottom" title="More Details">
                                                 <i class="tim-icons icon-zoom-split"></i>
                                             </a>
-                                            <a href="{{ route('products.edit', $product) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Product">
+                                            <!-- <a href="{{ route('products.edit', $product) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Product">
                                                 <i class="tim-icons icon-pencil"></i>
                                             </a>
                                             <form action="{{ route('products.destroy', $product) }}" method="post" class="d-inline">
@@ -50,7 +50,7 @@
                                                 <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Delete Product" onclick="confirm('Are you sure you want to remove this product? The records that contain it will continue to exist.') ? this.parentElement.submit() : ''">
                                                     <i class="tim-icons icon-simple-remove"></i>
                                                 </button>
-                                            </form>
+                                            </form> -->
                                         </td>
                                     </tr>
                                 @endforeach

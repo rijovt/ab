@@ -83,8 +83,8 @@
                             <th>Title</th>
                             <th>products</th>
                             <th>Stock</th>
-                            <th>Defective Stock</th>
-                            <th>Total Stock</th>
+                            <!-- <th>Defective Stock</th> -->
+                            <th>Total Value</th>
                             <th></th>
                         </thead>
                         <tbody>
@@ -95,8 +95,8 @@
                                     <td>{{ $receipt->title }}</td>
                                     <td>{{ $receipt->products->count() }}</td>
                                     <td>{{ $receipt->products->sum('stock') }}</td>
-                                    <td>{{ $receipt->products->sum('stock_defective') }}</td>
-                                    <td>{{ $receipt->products->sum('stock') + $receipt->products->sum('stock_defective') }}</td>
+                                    <!-- <td>{{ $receipt->products->sum('stock_defective') }}</td> -->
+                                    <td>{{ $receipt->tot }}</td>
                                     <td class="td-actions text-right">
                                         <a href="{{ route('receipts.show', $receipt) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Ver Receipt">
                                             <i class="tim-icons icon-zoom-split"></i>

@@ -21,7 +21,7 @@
                             @method('put')
 
                             <h6 class="heading-small text-muted mb-4">Product Information</h6>
-                            <div class="pl-lg-4">
+                            <!-- <div class="pl-lg-4">
                                 <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-name">{{ __('Name') }}</label>
                                     <input type="text" name="name" id="input-name" class="form-control form-control-alternative{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name', $product->name) }}" required autofocus>
@@ -63,10 +63,10 @@
                                             <input type="number" name="stock_defective" id="input-stock_defective" class="form-control form-control-alternative" placeholder="Defective Stock" value="{{ old('stock_defective', $product->stock_defective) }}" required>
                                             @include('alerts.feedback', ['field' => 'stock_defective'])
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-4">                                    
                                         <div class="form-group{{ $errors->has('price') ? ' has-danger' : '' }}">
-                                            <label class="form-control-label" for="input-price">Price</label>
+                                            <label class="form-control-label" for="input-price">Selling Price</label>
                                             <input type="number" step=".01" name="price" id="input-price" class="form-control form-control-alternative" placeholder="Price" value="{{ old('price', $product->price) }}" required>
                                             @include('alerts.feedback', ['field' => 'price'])
                                         </div>

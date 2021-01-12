@@ -141,7 +141,7 @@
                 return false;
             }
             else
-                input_total.value = ((parseFloat(input_qty.value) * parseFloat(input_price.value)) - parseFloat(input_discount.value)) || 0;
+                input_total.value = ((parseFloat(input_qty.value || 0) * parseFloat(input_price.value)) - parseFloat(input_discount.value || 0));
         }
         
     function blurFn() {        
@@ -187,7 +187,7 @@
                 data: $("#formData").serialize(),
                 dataType: 'json',
                 success: function (response) {
-                    var link = '<tr class="text-center" id="row_' + response.id + '"><td class="nos"></td><td>' + response.bar + '</td><td>' + response.item + '</td><td>' + response.price + '</td><td>' + response.qty + '</td><td>' + response.discount + '</td><td>' + response.tax_amt + '</td><td class="text-right">' + response.total_amount  + '</td>';
+                    var link = '<tr class="text-center" id="row_' + response.id + '"><td class="nos"></td><td>' + response.bar + '</td><td>' + response.item + '</td><td>' + response.price + '</td><td>' + response.qty + '</td><td>' + (response.discount || '') + '</td><td>' + response.tax_amt + '</td><td class="text-right">' + response.total_amount  + '</td>';
                     link += '<td class="text-center"><a href="javascript:void(0)" onclick="deleteProd(' + response.id + ')" ><i class="tim-icons icon-simple-remove"></i></a></td></tr>';
                     
                     $('#links-list').prepend(link);
@@ -236,15 +236,15 @@
     }
     </script>
     <style type="text/css">
-tbody {
-    display:block;
-    height:500px;
-    overflow:auto;
-}
-thead, tbody tr {
-    display:table;
-    width:100%;
-    table-layout:fixed;
-}
+        tbody {
+            display:block;
+            height:500px;
+            overflow:auto;
+        }
+        thead, tbody tr {
+            display:table;
+            width:100%;
+            table-layout:fixed;
+        }
     </style>
 @endpush

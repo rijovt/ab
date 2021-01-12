@@ -69,6 +69,11 @@ class ProviderController extends Controller
         $transactions = $provider->transactions()->latest()->limit(25)->get();
 
         $receipts = $provider->receipts()->latest()->limit(25)->get();
+        foreach($receipts as $key=>$receipt) {
+            foreach($receipt->products as $receivedproduct) {
+                $receipts[$key]['tot'] += ($receivedproduct->stock*$receivedproduct->price);
+            }
+        }
 
         return view('providers.show', compact('provider', 'transactions', 'receipts'));
     }

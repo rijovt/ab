@@ -6,6 +6,7 @@ use App\Product;
 use App\Item;
 use App\ProductCategory;
 use App\Http\Requests\ProductRequest;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -14,11 +15,16 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::paginate(25);
+        $products = Product::paginate(20);
 
-        return view('inventory.products.index', compact('products'));
+        $search = $request->bar;
+        if(!empty($search)){            
+            $products = Product::where('name', 'LIKE', '%' . $search . '%')->paginate(20)->withQueryString();
+        }
+
+        return view('inventory.products.index', compact('products','search'));
     }
 
     /**

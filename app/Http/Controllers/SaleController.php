@@ -110,6 +110,11 @@ class SaleController extends Controller
         return view('sales.print', ['sale' => $sale]);
     }
 
+    public function print1(Sale $sale)
+    {
+        return view('sales.print1', ['sale' => $sale]);
+    }
+
     public function addproduct(Sale $sale)
     {
         $products = Product::where('stock', '>', 0)->get();

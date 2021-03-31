@@ -21,11 +21,16 @@
                                 <div class="row">
                                     <div class="col-2">
                                         <label class="form-control-label" for="input-bar"></label>
-                                        <input type="text" name="bar" id="input-bar" class="form-control" value="{{$search}}" placeholder="Barcode">
+                                        <input type="text" name="bar" id="input-bar" class="form-control" value="{{!empty($bar) ? $bar :''}}" placeholder="Barcode">
+                                    </div> 
+                                    <div class="pt-lg-4">or</div>
+                                    <div class="col-2">
+                                        <label class="form-control-label" for="input-bar"></label>
+                                        <input type="text" name="item" id="input-bar" class="form-control" value="{{!empty($item) ? $item :''}}" placeholder="Item">
                                     </div>
                                     <div class="col-2">
                                         <input type="submit" value="Search" class="btn btn-sm btn-success mt-4" >
-                                        @if (!empty($search))
+                                        @if (!empty($bar) || !empty($item))
                                             <a href="{{ route('products.index') }}">
                                                 <input type="button" value="Clear" class="btn btn-sm btn-success mt-4" >
                                             </a>

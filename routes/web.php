@@ -54,6 +54,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::match(['put', 'patch'], 'sales/{sale}/product/{soldproduct}', ['as' => 'sales.product.update', 'uses' => 'SaleController@updateproduct']);
     Route::delete('sales/{sale}/product/{soldproduct}', ['as' => 'sales.product.destroy', 'uses' => 'SaleController@destroyproduct']);
     Route::get('sales/{sale}/print', ['as' => 'sales.print', 'uses' => 'SaleController@print']);
+    Route::get('sales/{sale}/print1', ['as' => 'sales.print1', 'uses' => 'SaleController@print1']);
 
     Route::get('clients/{client}/transactions/add', ['as' => 'clients.transactions.add', 'uses' => 'ClientController@addtransaction']);
 

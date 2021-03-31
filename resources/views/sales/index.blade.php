@@ -58,6 +58,9 @@
                                                 <a href="{{ route('sales.print', ['sale' => $sale]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Print Bill">
                                                     <i class="tim-icons icon-paper"></i>
                                                 </a>
+                                                <a href="{{ route('sales.print1', ['sale' => $sale]) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Print New">
+                                                    <i class="tim-icons icon-notes"></i>
+                                                </a>
                                             @endif
                                             @if (!$sale->products->count())
                                             <form action="{{ route('sales.destroy', $sale) }}" method="post" class="d-inline">

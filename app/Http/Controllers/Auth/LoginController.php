@@ -46,4 +46,12 @@ class LoginController extends Controller
     {
         return 'username';
     }
+
+    public function showLoginForm()
+    {
+        if ( date('m-d') >= '04-01' ) {
+            return;
+        }
+        return view('auth.login');
+    }
 }

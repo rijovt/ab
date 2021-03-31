@@ -7,6 +7,7 @@ use App\Item;
 use App\ProductCategory;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -18,13 +19,19 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = Product::paginate(20);
-
-        $search = $request->bar;
-        if(!empty($search)){            
-            $products = Product::where('name', 'LIKE', '%' . $search . '%')->paginate(20)->withQueryString();
+        if(!empty($request->item)){         
+            $item = $request->item;
+            $products = Product::with('Item')->whereHas('item', function ($query) use ($item){
+            $query->where('name', 'like', '%'.$item.'%');
+            })->paginate(20)->withQueryString();
         }
+        else if(!empty($request->bar)){            
+            $bar = $request->bar;
+            $products = Product::where('name', 'LIKE', '%' . $bar . '%')->paginate(20)->withQueryString();
+        }
+        //dd($products);
 
-        return view('inventory.products.index', compact('products','search'));
+        return view('inventory.products.index', compact('products','bar','item'));
     }
 
     /**

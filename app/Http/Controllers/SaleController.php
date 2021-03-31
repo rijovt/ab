@@ -95,7 +95,7 @@ class SaleController extends Controller
             $product_stock = $sold_product->product->stock;
             if($sold_product->qty > $product_stock) return back()->withError("The product '$product_name' does not have enough stock. Only has $product_stock units.");
         }*/
-        $last = Sale::where('inv_no', '!=', null)->orderBy('id', 'DESC')->first();
+        $last = Sale::where('inv_no', '!=', null)->where('active', 1)->orderBy('id', 'DESC')->first();
         $sale->inv_no = empty($last->inv_no) ? 1 : $last->inv_no+1;
         $sale->finalized_at = Carbon::now()->toDateTimeString();
         $sale->client->balance -= $sale->total_amount;

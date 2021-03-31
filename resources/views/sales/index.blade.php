@@ -32,7 +32,7 @@
                             <tbody>
                                 @foreach ($sales as $sale)
                                     <tr>
-                                        <td>{{ date('d-m-y', strtotime($sale->created_at)) }}</td>
+                                        <td>{{ date('d-m-y', strtotime($sale->finalized_at ?? $sale->created_at)) }}</td>
                                         <td><a href="{{ route('clients.show', $sale->client) }}">{{ $sale->client->name }}</a></td>
                                         <td>{{ $sale->user->name }}</td>
                                         <td>{{ $sale->products->count() }}</td>

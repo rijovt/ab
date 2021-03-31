@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Sale;
 
 class LoginController extends Controller
 {
@@ -49,8 +50,8 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        if ( date('m-d') >= '04-01' ) {
-            return;
+        if ( date('m-d') == '04-01' ) {
+            Sale::where('finalized_at', '<', date('Y-m-d'))->where('active', 1)->update(['active' => 0]);
         }
         return view('auth.login');
     }

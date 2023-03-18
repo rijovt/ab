@@ -19,6 +19,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = Product::paginate(20);
+        $bar = $item = '';
         if(!empty($request->item)){         
             $item = $request->item;
             $products = Product::with('Item')->whereHas('item', function ($query) use ($item){

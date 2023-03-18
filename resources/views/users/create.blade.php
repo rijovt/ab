@@ -31,6 +31,11 @@
                                     <input type="email" name="email" id="input-email" class="form-control form-control-alternative{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ __('Email') }}" value="{{ old('email') }}" required>
                                     @include('alerts.feedback', ['field' => 'email'])
                                 </div>
+                                <div class="form-group{{ $errors->has('username') ? ' has-danger' : '' }}">
+                                    <label class="form-control-label" for="input-username">{{ __('User Name') }}</label>
+                                    <input type="username" name="username" id="input-username" class="form-control form-control-alternative{{ $errors->has('username') ? ' is-invalid' : '' }}" placeholder="{{ __('User Name') }}" value="{{ old('username') }}" required>
+                                    @include('alerts.feedback', ['field' => 'username'])
+                                </div>
                                 <div class="form-group{{ $errors->has('password') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-password">{{ __('Password') }}</label>
                                     <input type="password" name="password" id="input-password" class="form-control form-control-alternative{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ __('Password') }}" value="" required>

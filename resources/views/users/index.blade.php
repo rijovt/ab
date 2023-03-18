@@ -9,9 +9,11 @@
                         <div class="col-8">
                             <h4 class="card-title">{{ __('Users') }}</h4>
                         </div>
-                        <div class="col-4 text-right">
-                            <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">{{ __('Add user') }}</a>
-                        </div>
+                        @if (auth()->user()->username == 'admin')
+                            <div class="col-4 text-right">
+                                <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">{{ __('Add user') }}</a>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body">
@@ -22,6 +24,7 @@
                             <thead class=" text-primary">
                                 <th scope="col">{{ __('Name') }}</th>
                                 <th scope="col">{{ __('Email') }}</th>
+                                <th scope="col">{{ __('User Name') }}</th>
                                 <th scope="col">{{ __('Creation Date') }}</th>
                                 <th scope="col"></th>
                             </thead>
@@ -32,14 +35,16 @@
                                         <td>
                                             <a href="#">{{ $user->email }}</a>
                                         </td>
+                                        <td>{{ $user->username }}</td>
                                         <td>{{ $user->created_at ? $user->created_at->format('d/m/Y H:i'):'' }}</td>
                                         <td class="text-right">
+                                            @if (auth()->user()->username == 'admin' || auth()->user()->id == $user->id)
                                                 <div class="dropdown">
                                                     <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         <i class="tim-icons icon-settings-gear-63"></i>
                                                     </a>
                                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                        @if (auth()->user()->id != $user->id)
+                                                        @if (auth()->user()->username == 'admin')
                                                             <form action="{{ route('users.destroy', $user) }}" method="post">
                                                                 @csrf
                                                                 @method('delete')
@@ -54,6 +59,7 @@
                                                         @endif
                                                     </div>
                                                 </div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

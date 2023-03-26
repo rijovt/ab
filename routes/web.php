@@ -29,6 +29,9 @@ Route::group(['middleware' => 'auth'], function () {
         'inventory/categories' => 'ProductCategoryController',
         'transactions/transfer' => 'TransferController',
         'methods' => 'MethodController',
+        'production/orders' => 'OrdersController',
+        'production/orderIssue' => 'OrderIssueController',
+        'employees' => 'EmployeeController',
     ]);
     
     Route::resource('transactions', 'TransactionController')->except(['create', 'show']);

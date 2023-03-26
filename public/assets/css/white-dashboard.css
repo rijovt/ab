@@ -13421,7 +13421,7 @@ img {
 }
 
 .navbar.navbar-transparent {
-  background: transparent !important;
+  background: #f5f6fa !important;
 }
 
 .navbar.bg-white .navbar-nav .search-bar.input-group i {

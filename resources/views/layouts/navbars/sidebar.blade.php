@@ -61,7 +61,50 @@
                     </ul>
                 </div>
             </li>
+            <li>
+                <a data-toggle="collapse" href="#production" {{ $section == 'production' ? 'aria-expanded=true' : '' }}>
+                    <i class="tim-icons icon-app"></i>
+                    <span class="nav-link-text">Production</span>
+                    <b class="caret mt-1"></b>
+                </a>
 
+                <div class="collapse {{ $section == 'production' ? 'show' : '' }}" id="production">
+                    <ul class="nav pl-4">
+                        <li @if ($pageSlug == 'orders') class="active " @endif>
+                            <a href="{{ route('orders.index') }}">
+                                <i class="tim-icons icon-paper"></i>
+                                <p>Orders</p>
+                            </a>
+                        </li>
+                        <li @if ($pageSlug == 'orderIssue') class="active " @endif>
+                            <a href="{{ route('orderIssue.index') }}">
+                                <i class="tim-icons icon-settings"></i>
+                                <p>Order Issue</p>
+                            </a>
+                        </li>
+                        <li @if ($pageSlug == 'products') class="active " @endif>
+                            <a href="{{ route('products.index') }}">
+                                <i class="tim-icons icon-components"></i>
+                                <p>Stock</p>
+                            </a>
+                        </li>
+                        <li @if ($pageSlug == 'products') class="active " @endif>
+                            <a href="">
+                                <i class="tim-icons icon-bus-front-12"></i>
+                                <p>Shipping</p>
+                            </a>
+                        </li>
+                        <li @if ($pageSlug == 'employees') class="active " @endif>
+                            <a href="{{ route('employees.index') }}">
+                                <i class="tim-icons icon-satisfied"></i>
+                                <p>Employees</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+<!-- enable production only -->
             <li>
                 <a data-toggle="collapse" href="#inventory" {{ $section == 'inventory' ? 'aria-expanded=true' : '' }}>
                     <i class="tim-icons icon-app"></i>

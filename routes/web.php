@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
         'inventory/categories' => 'ProductCategoryController',
         'transactions/transfer' => 'TransferController',
         'methods' => 'MethodController',
-        'production/orders' => 'OrdersController',
+        'production/orders' => 'OrderController',
         'production/orderIssue' => 'OrderIssueController',
         'employees' => 'EmployeeController',
     ]);
@@ -68,6 +68,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
     Route::match(['put', 'patch'], 'profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
     Route::match(['put', 'patch'], 'profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
+
+    Route::post('production/orders/add', ['uses' => 'OrderController@addorder']);
+    Route::delete('production/orders/delete/{order}', ['uses' => 'OrderController@destroyorder']);
 });
 
 Route::group(['middleware' => 'auth'], function () {

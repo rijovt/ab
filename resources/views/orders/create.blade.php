@@ -81,12 +81,9 @@
 
                         <div class="pl-lg-4">
                             <div class="row">
-                                <div class="col-9"></div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-sm btn-success mt-4" onclick="confirm('ATTENTION: Do you want to finalize it? Your records cannot be modified from now on.') ? window.location.replace('{{ route('orders.create') }}') : ''">
-                                        Finalize
-                                    </button>                                   
-                                </div>
+                                <button type="button" class="btn btn-sm btn-success" onclick="confirm('ATTENTION: Do you want to finalize it?') ? window.location.replace('{{ route('orders.finalize') }}') : ''">
+                                    Finalize
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -170,7 +167,7 @@
     <style type="text/css">
         tbody {
             display:block;
-            height:500px;
+            height:300px;
             overflow:auto;
         }
         thead, tbody tr {

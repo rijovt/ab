@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->integer('qty');
             $table->integer('finish_qty')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->timestamp('finalized_at')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();

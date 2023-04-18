@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -12,11 +13,20 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::latest()->paginate(25);
-
-        return view('orders.index', compact('orders'));
+        $query = Order::where('finalized_at','!=',null);
+        $order = $color = '';
+        if(!empty($request->order)){
+            $order = trim($request->order);
+            $query = $query->where('order_no', 'LIKE', '%' . $order . '%');
+        }
+        if(!empty($request->color)){
+            $color = trim($request->color);
+            $query = $query->where('color', 'LIKE', '%' . $color . '%');
+        }
+        $orders = $query->orderBy('id', 'DESC')->paginate(20);
+        return view('orders.index', compact('orders','order','color'));
     }
 
     /**
@@ -26,9 +36,16 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $orders = Order::where('deleted_at', null)->orderBy('id', 'DESC')->get();
+        $orders = Order::where('finalized_at', null)->where("user_id", auth()->user()->id)->orderBy('id', 'DESC')->get();
 
         return view('orders.create', compact('orders'));
+    }
+
+    public function finalize()
+    {
+        Order::where('finalized_at', null)->where("user_id", auth()->user()->id)->update(['finalized_at' => Carbon::now()->toDateTimeString()]);
+
+        return redirect()->route('orders.index')->withStatus('The order saved successfully.');
     }
 
     /**

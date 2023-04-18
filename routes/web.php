@@ -71,6 +71,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('production/orders/add', ['uses' => 'OrderController@addorder']);
     Route::delete('production/orders/delete/{order}', ['uses' => 'OrderController@destroyorder']);
+    Route::get('production/order/finalize', ['as' => 'orders.finalize','uses' => 'OrderController@finalize']);
 });
 
 Route::group(['middleware' => 'auth'], function () {
